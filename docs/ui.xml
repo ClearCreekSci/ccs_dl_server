@@ -1,46 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ccs-ui ns="ccs_data_logger">
     <types>
-       <struct>
-           <ns>logger</ns>
-           <name>schedule</name>
-           <desc>Configure time between collection events and number of collection events per file</desc>
-           <member>
-               <name>period</name>
-               <type>int</type>
-               <desc>The number of minutes between collection events</desc>
-           </member>
-           <member>
-               <name>rollover-count</name>
-               <type>int</type>
-               <desc>The number of collection events stored in each .csv file</desc>
-           </member>
-        </struct>
-	<struct abstract="true">
-            <ns>logger</ns>
-	    <name>sensor</name>
-	    <desc>Generic sensor for use with the data logger</desc>
-	    <member ignore="true">
-                <!-- All sensors MUST have a "name" member that is the same -->
-                <!-- name as the base part of the sensor's python -->
-                <!-- file (eg. "bme280"). This is used directly in the settings -->
-                <!-- file, so we ignore it in configuration  -->
-                <name>name</name>
-                <type>string</type>
-                <desc>The name of the sensor, same as the basename of the file implementing the sensor</desc>
-	    </member>
-	    <member>
-               <name>schedule</name>
-               <type>logger:schedule</type>
-	    </member>
-        </struct>
-	<list>
-            <ns>logger</ns>
-            <name>sensors</name>
-	    <type>list</type>
-	    <itemtype>logger:sensor</itemtype>
-	    <desc>List of sensor objects</desc>
-	</list>
     </types>
     <ui>
         <object>
@@ -54,11 +14,7 @@
 	        <videos>/opt/ccs/DataLogger/videos</videos>
             </defaults>
         </object>
-	<object>
-            <name>sensors</name>
-            <type>logger:sensors</type>
-        </object>
-            <object>
+        <object>
             <name>version</name>
 	    <type>string</type>
             <defaults>
