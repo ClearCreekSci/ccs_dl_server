@@ -140,7 +140,7 @@ def create_base_script(zip_size,settings):
     rv += 'cp -r  ' + UNZIP_DST + '/ccs_dlconfig ' + DATASERVER_DST + '\n'
     rv += 'cp -r  ' + UNZIP_DST + '/databrowser ' + DATASERVER_DST + '\n'
     rv += 'cp -r  ' + UNZIP_DST + '/static ' + DATASERVER_DST + '\n'
-    rv += 'cp -r  ' + UNZIP_DST + '/templates ' + DATASERVER_DST '\n'
+    rv += 'cp -r  ' + UNZIP_DST + '/templates ' + DATASERVER_DST + '\n'
     rv += 'cp ' + UNZIP_DST + '/system/ccsdataserver.service ' + SYSTEMD_SERVICE_DST + '\n'
 
     rv += 'echo "Creating ccsdataserver systemd service..."\n'
