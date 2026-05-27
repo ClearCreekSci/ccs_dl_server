@@ -29,6 +29,8 @@ DATASERVER_DST          = TOPLEVEL_DST + '/DataServer'
 SYSTEMD_SERVICE_DST     = '/etc/systemd/system'
 UNZIP_DST               = './unzip'
 SETTINGS_FILE_NAME      = './settings.cfg'
+SERVICE_FILE_NAME       = './system/ccsdataserver.service'
+VENV_NAME               = 'venv'
 
 class InvalidSettingsFileException(Exception):
     pass
@@ -194,6 +196,28 @@ def run(args):
         fd.write('<version>' + str(version) + '</version>\n')
         fd.write('</manifest>\n')
 
+    # Create the systemd service file
+    with open(SERVICE_FILE_NAME,'wt') as fd:
+        fd.write('[Unit]\n')
+        fd.write('# Description=Clear Creek Scientific Data Server\n')
+        fd.write('StartLimitIntervalSec=300\n')
+        fd.write('#StartLimitBurst=5\n')
+        fd.write('[Service]\n')
+        fd.write('WorkingDirectory=' + settings.base)
+        s = 'ExecStart=CCS_DS_CFG_PATH='
+        s += os.path.join(settings.base,SETTINGS_FILE_NAME)
+        s += ' CCS_DS_MAN_PATH='
+        s += os.path.join(settings.base,MANIFEST_NAME)
+        s += ' '
+        venv_dir = os.path.join(settings.base,VENV_NAME)
+        s += os.path.joint(venv_dir,'/bin/python3')
+        s += ' ' + os.path.join(settings.base,'run.py\n')
+        fd.write(s)
+        fd.write('Restart=on-failure\n')
+        fd.write('RestartSec=10s\n')
+        fd.write('[Install]\n')
+        fd.write('WantedBy=default.target\n')
+
     # Create the zip file
     zip_name = str(prefix) + '_v' + str(version) + ZIP_SUFFIX
     with zipfile.ZipFile(zip_name,mode='w') as zf:
@@ -211,23 +235,6 @@ def run(args):
         add_glob_to_zip(zf,'../templates','./templates','*')
         zf.mkdir('system')
         add_glob_to_zip(zf,'../system','./system','*')
-
-    # FIXME: We need to build the systemctl service file using the
-    # configured paths instead of copying a static version of it...
-    # This is the current service file
-    # [Unit]
-    # Description=Clear Creek Scientific Data Server
-    # StartLimitIntervalSec=300
-    #StartLimitBurst=5
-    #
-    # [Service]
-    # WorkingDirectory=/opt/ccs/DataServer
-    # ExecStart=CCS_DS_CFG_PATH=/opt/ccs/DataServer/settings.cfg CCS_DS_MAN_PATH=/opt/ccs/DataServer/manifest.xml /opt/ccs/venv_dataserver/bin/python3 /opt/ccs/DataServer/run.py
-    # Restart=on-failure
-    # RestartSec=10s
-    #
-    # [Install]
-    # WantedBy=default.target
 
     zip_size = os.path.getsize(zip_name)
 
