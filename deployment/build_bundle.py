@@ -99,11 +99,11 @@ def create_base_script(zip_size,settings):
     rv += 'dd bs=1 if="$ME" of=script.zip skip=' + SCRIPT_LEN_REPLACE_STR + ' count=' + str(zip_size) + '\n'
 
     rv += 'echo "Extracting files..."\n'
-    rv += 'rm -rf ${UNZIP_DST}\n'
-    rv += 'mkdir ${UNZIP_DST}\n'
+    rv += 'rm -rf ' + UNZIP_DST + '\n'
+    rv += 'mkdir ' + UNZIP_DST + '\n'
     rv += 'unzip -q -d ' + UNZIP_DST + ' script.zip\n'
 
-    rv += '# Setup up the data logger files...\n'
+    rv += '# Setup up the data server files...\n'
     for key in settings.paths.keys():
         rv += 'mkdir -p ' + settings.paths[key] + '\n'
 
@@ -116,15 +116,15 @@ def create_base_script(zip_size,settings):
     rv += 'pip install pip setuptools wheel\n'
     rv += 'UN=`uname -a`\n'
     rv += 'if [[ $UN == *"armv6l"* ]]; then\n'
-    rv += '    pip install "${UNZIP_DST}/system/bcrypt-5.0.0-cp313-cp313-linux_armv6l.whl"\n'
+    rv += '    pip install "' + UNZIP_DST + '/system/bcrypt-5.0.0-cp313-cp313-linux_armv6l.whl"\n'
     rv += 'fi\n'
 
     rv += 'if [[ $UN == *"armv7l"* ]]; then\n'
-    rv += '    cp "${UNZIP_DST}/system/bcrypt-5.0.0-cp313-cp313-linux_arm6l.whl" "${UNZIP_DST}/system/bcrypt-5.0.0-cp313-cp313-linux_arm7l.whl"\n'
-    rv += '    pip install "${UNZIP_DST}/system/bcrypt-5.0.0-cp313-cp313-linux_armv7l.whl"\n'
+    rv += '    cp "' + UNZIP_DST + '/system/bcrypt-5.0.0-cp313-cp313-linux_arm6l.whl" "${UNZIP_DST}/system/bcrypt-5.0.0-cp313-cp313-linux_arm7l.whl"\n'
+    rv += '    pip install "' + UNZIP_DST + '/system/bcrypt-5.0.0-cp313-cp313-linux_armv7l.whl"\n'
     rv += 'fi\n'
 
-    rv += 'pip install -r "${UNZIP_DST}/requirements.txt"\n'
+    rv += 'pip install -r ' + UNZIP_DST + '/requirements.txt\n'
 
     rv += 'for entry in "${VENV_LIB_DIR}"/*\n'
     rv += 'do\n'
@@ -134,14 +134,14 @@ def create_base_script(zip_size,settings):
 
     rv += '# Setup up the DataServer files...\n'
     rv += 'echo "Copying Weather Data Server files..."\n'
-    rv += 'cp "${UNZIP_DST}/run.py" "${DATASERVER_DST}"\n'
-    rv += 'cp -r  "${UNZIP_DST}/manifest.xml" "${DATASERVER_DST}"\n'
-    rv += 'cp -r  "${UNZIP_DST}/settings.cfg" "${DATASERVER_DST}"\n'
-    rv += 'cp -r  "${UNZIP_DST}/ccs_dlconfig" "${DATASERVER_DST}"\n'
-    rv += 'cp -r  "${UNZIP_DST}/databrowser" "${DATASERVER_DST}"\n'
-    rv += 'cp -r  "${UNZIP_DST}/static" "${DATASERVER_DST}"\n'
-    rv += 'cp -r  "${UNZIP_DST}/templates" "${DATASERVER_DST}"\n'
-    rv += 'cp "${UNZIP_DST}/system/ccsdataserver.service" "${SYSTEMD_SERVICE_DST}"\n'
+    rv += 'cp ' + UNZIP_DST + '/run.py ' + DATASERVER_DST + '\n'
+    rv += 'cp -r  ' + UNZIP_DST + '/manifest.xml ' + DATASERVER_DST + '\n'
+    rv += 'cp -r  ' + UNZIP_DST + '/settings.cfg ' + {DATASERVER_DST} + '\n'
+    rv += 'cp -r  ' + UNZIP_DST + '/ccs_dlconfig ' + DATASERVER_DST} + '\n'
+    rv += 'cp -r  ' + UNZIP_DST + '/databrowser ' + DATASERVER_DST + '\n'
+    rv += 'cp -r  ' + UNZIP_DST + '/static ' + DATASERVER_DST + '\n'
+    rv += 'cp -r  ' + UNZIP_DST + '/templates ' + DATASERVER_DST '\n'
+    rv += 'cp ' + UNZIP_DST + '/system/ccsdataserver.service ' + SYSTEMD_SERVICE_DST} + '\n'
 
     rv += 'echo "Creating ccsdataserver systemd service..."\n'
     rv += 'systemctl daemon-reload\n'
@@ -203,9 +203,9 @@ def run(args):
         zf.mkdir('static')
         add_glob_to_zip(zf,'../static','./static','*')
         zf.mkdir('templates')
-        zf.write('../templates','./templates','*')
+        add_glob_to_zip(zf,'../templates','./templates','*')
         zf.mkdir('system')
-        zf.write('./system/ccsdatalogger.service','system/ccsdatalogger.service')
+        add_glob_to_zip(zf,'../system','./system','*')
 
     zip_size = os.path.getsize(zip_name)
 
