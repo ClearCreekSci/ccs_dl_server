@@ -1,0 +1,242 @@
+import argparse
+import os
+import requests
+import subprocess
+import zipfile
+
+import datetime as dt
+import xml.etree.ElementTree as et
+
+from glob import glob
+
+DEFAULT_VERSION         = '1'
+DEFAULT_PREFIX          = 'ccs_data_server'
+
+MANIFEST_NAME           = 'manifest.xml'
+ZIP_SUFFIX              = '.zip'
+SCRIPT_SUFFIX           = '.sh'
+
+SCRIPT_LEN_REPLACE_STR  = '<***>'
+
+TAG_BASE                = 'paths'
+TAG_NAME                = 'name'
+TAG_PATHS               = 'paths'
+TAG_ROOT                = 'ccs-config'
+
+TOPLEVEL_DST            = '/opt/ccs'
+SITE_DIR                = 'site-packages'
+DATASERVER_DST          = TOPLEVEL_DST + '/DataServer'
+SYSTEMD_SERVICE_DST     = '/etc/systemd/system'
+UNZIP_DST               = './unzip'
+SETTINGS_FILE_NAME      = './settings.cfg'
+
+class InvalidSettingsFileException(Exception):
+    pass
+
+class Settings(object):
+
+    def __init__(self):
+        self.paths = dict()
+
+    def read(self,path):
+        tree = et.parse(path)
+        root = tree.getroot()
+        if root.tag == TAG_ROOT:
+            paths_node = root.find(TAG_PATHS)
+            if None is not paths_node:
+                for path_node in paths_node:
+                    name = path_node.tag.strip()
+                    value = path_node.text.strip()
+                    self.paths[name] = value
+            else:
+                raise InvalidSettingsFileException('No paths element in settings file: ' + str(path)) 
+        else:
+            raise InvalidSettingsFileException(path + ' is not a valid settings file') 
+
+    def __repr__(self):
+        rv = ''
+        rv += 'paths: ' + str(self.paths) + '\n'
+        return rv
+
+def get_settings(path):
+    rv = None
+    if os.path.exists(path):
+        try:
+            rv = Settings()
+            rv.read(path)
+        except Exception as ex:
+            rv = None
+            print('Exception reading settings file: ' + str(ex))
+    else:
+        print("Couldn't find settings file: " + str(path))
+    return rv
+
+def add_glob_to_zip(zf,src,dst,glob_str):
+    files = glob(os.path.join(src,glob_str))
+    for f in files:
+        basename = os.path.basename(f)
+        dst_path = os.path.join(dst,basename)
+        zf.write(f,dst_path)
+
+# FIXME: WHAT ABOUT UNINSTALL?
+def create_base_script(zip_size,settings):
+    rv = ''
+    # Create the base script
+    rv = '#!/usr/bin/bash\n'
+    rv += 'if [ ! $EUID -eq 0 ]; then\n'
+    rv += '    echo "Please run this install script as root"\n'
+    rv += '    exit\n'
+    rv += 'fi\n'
+    rv += '# Make sure we can connect to the internets'
+    rv += 'ping -c 1 google.com > /dev/null 2>&1\n'
+    rv += 'if [ $? -ne 0 ]; then\n'
+    rv += '    echo "Unable to connect to internet to download required Python files. Installation failed."\n'
+    rv += '    exit'
+    rv += 'fi'
+    rv += 'ME=$(basename "$0")\n'
+    rv += 'mkdir ' + UNZIP_DST + '\n'
+        # Extract the zip file from the install script
+    rv += 'dd bs=1 if="$ME" of=script.zip skip=' + SCRIPT_LEN_REPLACE_STR + ' count=' + str(zip_size) + '\n'
+
+    rv += 'echo "Extracting files..."\n'
+    rv += 'rm -rf ${UNZIP_DST}\n'
+    rv += 'mkdir ${UNZIP_DST}\n'
+    rv += 'unzip -q -d ' + UNZIP_DST + ' script.zip\n'
+
+    rv += '# Setup up the data logger files...\n'
+    for key in settings.paths.keys():
+        rv += 'mkdir -p ' + settings.paths[key] + '\n'
+
+    rv += '# Setup up the python virtual environment...\n'
+    rv += 'echo "Creating Python virtual environment at ${VENV_DST}. This may take some time..."\n'
+    rv += 'python -m venv "${VENV_DST}"\n'
+    rv += 'echo "Installing required Python packages..."\n'
+    rv += 'source "${VENV_DST}/bin/activate"\n'
+    rv += 'pip install pip --upgrade\n'
+    rv += 'pip install pip setuptools wheel\n'
+    rv += 'UN=`uname -a`\n'
+    rv += 'if [[ $UN == *"armv6l"* ]]; then\n'
+    rv += '    pip install "${UNZIP_DST}/system/bcrypt-5.0.0-cp313-cp313-linux_armv6l.whl"\n'
+    rv += 'fi\n'
+
+    rv += 'if [[ $UN == *"armv7l"* ]]; then\n'
+    rv += '    cp "${UNZIP_DST}/system/bcrypt-5.0.0-cp313-cp313-linux_arm6l.whl" "${UNZIP_DST}/system/bcrypt-5.0.0-cp313-cp313-linux_arm7l.whl"\n'
+    rv += '    pip install "${UNZIP_DST}/system/bcrypt-5.0.0-cp313-cp313-linux_armv7l.whl"\n'
+    rv += 'fi\n'
+
+    rv += 'pip install -r "${UNZIP_DST}/requirements.txt"\n'
+
+    rv += 'for entry in "${VENV_LIB_DIR}"/*\n'
+    rv += 'do\n'
+    rv += '    PYTHON_VER=`basename "${entry}"`\n'
+    rv += 'done\n'
+    rv += 'deactivate\n'
+
+    rv += '# Setup up the DataServer files...\n'
+    rv += 'echo "Copying Weather Data Server files..."\n'
+    rv += 'cp "${UNZIP_DST}/run.py" "${DATASERVER_DST}"\n'
+    rv += 'cp -r  "${UNZIP_DST}/manifest.xml" "${DATASERVER_DST}"\n'
+    rv += 'cp -r  "${UNZIP_DST}/settings.cfg" "${DATASERVER_DST}"\n'
+    rv += 'cp -r  "${UNZIP_DST}/ccs_dlconfig" "${DATASERVER_DST}"\n'
+    rv += 'cp -r  "${UNZIP_DST}/databrowser" "${DATASERVER_DST}"\n'
+    rv += 'cp -r  "${UNZIP_DST}/static" "${DATASERVER_DST}"\n'
+    rv += 'cp -r  "${UNZIP_DST}/templates" "${DATASERVER_DST}"\n'
+    rv += 'cp "${UNZIP_DST}/system/ccsdataserver.service" "${SYSTEMD_SERVICE_DST}"\n'
+
+    rv += 'echo "Creating ccsdataserver systemd service..."\n'
+    rv += 'systemctl daemon-reload\n'
+    rv += 'systemctl enable ccsdataserver.service\n'
+    rv += 'systemctl start ccsdataserver.service\n'
+
+    rv += 'rm -rf ' + UNZIP_DST + '\n'
+    rv += 'rm -rf script.zip\n'
+    rv += 'echo "Installation completed succesfully."\n'
+    rv += 'exit\n'
+    return rv
+
+def run(args):
+    global DATASERVER_DST
+    commit = ''
+    prefix = DEFAULT_PREFIX
+    version = DEFAULT_VERSION
+    if None is not args.prefix:
+        prefix = args.prefix
+    if None is not args.version:
+        version = args.version
+    if None is not args.commit:
+        commit = args.commit
+    else:
+        # Popen call example...
+        # Source - https://stackoverflow.com/a/92395
+        # Posted by Eli Courtwright, modified by community. See post 'Timeline' for change history
+        # Retrieved 2026-05-22, License - CC BY-SA 4.0
+        commit = subprocess.Popen('git rev-parse HEAD', shell=True, stdout=subprocess.PIPE).stdout.read()
+        commit = str(commit).strip()
+
+    settings = get_settings(SETTINGS_FILE_NAME)
+    if None is settings:
+        return
+
+    if TAG_BASE in settings.paths.keys():
+        DATASERVER_DST = settings.paths[TAG_BASE]
+
+    # Create the manifest
+    with open(MANIFEST_NAME,'wt') as fd:
+        fd.write('<manifest>\n')
+        current_time = dt.datetime.now(dt.timezone.utc).isoformat(timespec='minutes')
+        fd.write('<time>' + current_time + '</time>\n')
+        fd.write('<commit>' + commit + '</commit>\n')
+        fd.write('<version>' + str(version) + '</version>\n')
+        fd.write('</manifest>\n')
+
+    # Create the zip file
+    zip_name = str(prefix) + '_v' + str(version) + ZIP_SUFFIX
+    with zipfile.ZipFile(zip_name,mode='w') as zf:
+        zf.write('settings.cfg','settings.cfg')
+        zf.write('manifest.xml','manifest.xml')
+        zf.write('../run.py','./run.py')
+        zf.write('../requirements.txt','./requirements.txt')
+        zf.mkdir('databrowser')
+        add_glob_to_zip(zf,'../databrowser','./databrowser','*')
+        zf.mkdir('ccs_dlconfig')
+        add_glob_to_zip(zf,'../ccs_dlconfig','./ccs_dlconfig','*.py')
+        zf.mkdir('static')
+        add_glob_to_zip(zf,'../static','./static','*')
+        zf.mkdir('templates')
+        zf.write('../templates','./templates','*')
+        zf.mkdir('system')
+        zf.write('./system/ccsdatalogger.service','system/ccsdatalogger.service')
+
+    zip_size = os.path.getsize(zip_name)
+
+    script = create_base_script(zip_size,settings)
+
+    base_len = len(script)
+    idx = script.find(SCRIPT_LEN_REPLACE_STR)
+    if idx > 0:
+        x = f'{base_len:05d}'
+        parts = script.split(SCRIPT_LEN_REPLACE_STR)
+        if 2 == len(parts):
+            script = parts[0] + x + parts[1]
+
+    # Concatenate the base script and the zip file
+    read_buf = ''
+    install_script_name = str(prefix) + '_install_v' + str(version) + SCRIPT_SUFFIX
+    with open(install_script_name,'wb') as fd:
+        script = script.encode('utf-8')
+        fd.write(script)
+        with open(zip_name,'rb') as zfd:
+            zip_buf = zfd.read()
+        fd.write(zip_buf) 
+    
+
+if '__main__' == __name__:
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-v','--version',help='version string')
+    parser.add_argument('-c','--commit',help='commit string')
+    parser.add_argument('-p','--prefix',help='prefix string')
+    args = parser.parse_args()
+    run(args)
+
+
+
