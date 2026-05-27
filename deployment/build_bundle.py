@@ -96,8 +96,8 @@ def create_base_script(zip_size,settings):
     rv += 'ping -c 1 google.com > /dev/null 2>&1\n'
     rv += 'if [ $? -ne 0 ]; then\n'
     rv += '    echo "Unable to connect to internet to download required Python files. Installation failed."\n'
-    rv += '    exit'
-    rv += 'fi'
+    rv += '    exit\n'
+    rv += 'fi\n'
     rv += 'ME=$(basename "$0")\n'
     rv += 'mkdir ' + UNZIP_DST + '\n'
         # Extract the zip file from the install script
