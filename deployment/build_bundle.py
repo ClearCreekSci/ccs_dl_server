@@ -83,6 +83,11 @@ def create_base_script(zip_size,settings):
     rv = ''
     # Create the base script
     rv = '#!/usr/bin/bash\n'
+    # FIXME: Get rid of these macros...
+    rv += 'TOPLEVEL_DST="/opt/ccs"\n'
+    rv += 'VENV_DST="${TOPLEVEL_DST}/venv_weatherdataserver"\n'
+    rv += 'VENV_LIB_DIR="${VENV_DST}/lib"\n'
+
     rv += 'if [ ! $EUID -eq 0 ]; then\n'
     rv += '    echo "Please run this install script as root"\n'
     rv += '    exit\n'
@@ -120,7 +125,7 @@ def create_base_script(zip_size,settings):
     rv += 'fi\n'
 
     rv += 'if [[ $UN == *"armv7l"* ]]; then\n'
-    rv += '    cp "' + UNZIP_DST + '/system/bcrypt-5.0.0-cp313-cp313-linux_arm6l.whl" "${UNZIP_DST}/system/bcrypt-5.0.0-cp313-cp313-linux_arm7l.whl"\n'
+    rv += '    cp "' + UNZIP_DST + '/system/bcrypt-5.0.0-cp313-cp313-linux_arm6l.whl" "' + UNZIP_DST + '/system/bcrypt-5.0.0-cp313-cp313-linux_arm7l.whl"\n'
     rv += '    pip install "' + UNZIP_DST + '/system/bcrypt-5.0.0-cp313-cp313-linux_armv7l.whl"\n'
     rv += 'fi\n'
 
