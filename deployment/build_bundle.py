@@ -212,6 +212,23 @@ def run(args):
         zf.mkdir('system')
         add_glob_to_zip(zf,'../system','./system','*')
 
+    # FIXME: We need to build the systemctl service file using the
+    # configured paths instead of copying a static version of it...
+    # This is the current service file
+    # [Unit]
+    # Description=Clear Creek Scientific Data Server
+    # StartLimitIntervalSec=300
+    #StartLimitBurst=5
+    #
+    # [Service]
+    # WorkingDirectory=/opt/ccs/DataServer
+    # ExecStart=CCS_DS_CFG_PATH=/opt/ccs/DataServer/settings.cfg CCS_DS_MAN_PATH=/opt/ccs/DataServer/manifest.xml /opt/ccs/venv_dataserver/bin/python3 /opt/ccs/DataServer/run.py
+    # Restart=on-failure
+    # RestartSec=10s
+    #
+    # [Install]
+    # WantedBy=default.target
+
     zip_size = os.path.getsize(zip_name)
 
     script = create_base_script(zip_size,settings)
