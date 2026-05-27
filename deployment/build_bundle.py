@@ -83,9 +83,9 @@ def create_base_script(zip_size,settings):
     rv = ''
     # Create the base script
     rv = '#!/usr/bin/bash\n'
-    # FIXME: Get rid of these macros...
+    # FIXME: Get rid of these macros, make it configurable...
     rv += 'TOPLEVEL_DST="/opt/ccs"\n'
-    rv += 'VENV_DST="${TOPLEVEL_DST}/venv_weatherdataserver"\n'
+    rv += 'VENV_DST="${TOPLEVEL_DST}/venv_dataserver"\n'
     rv += 'VENV_LIB_DIR="${VENV_DST}/lib"\n'
 
     rv += 'if [ ! $EUID -eq 0 ]; then\n'
