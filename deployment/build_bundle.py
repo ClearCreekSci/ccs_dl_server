@@ -136,7 +136,7 @@ def create_base_script(zip_size,settings):
     rv += 'echo "Copying Weather Data Server files..."\n'
     rv += 'cp ' + UNZIP_DST + '/run.py ' + DATASERVER_DST + '\n'
     rv += 'cp -r  ' + UNZIP_DST + '/manifest.xml ' + DATASERVER_DST + '\n'
-    rv += 'cp -r  ' + UNZIP_DST + '/settings.cfg ' + {DATASERVER_DST + '\n'
+    rv += 'cp -r  ' + UNZIP_DST + '/settings.cfg ' + DATASERVER_DST + '\n'
     rv += 'cp -r  ' + UNZIP_DST + '/ccs_dlconfig ' + DATASERVER_DST + '\n'
     rv += 'cp -r  ' + UNZIP_DST + '/databrowser ' + DATASERVER_DST + '\n'
     rv += 'cp -r  ' + UNZIP_DST + '/static ' + DATASERVER_DST + '\n'
