@@ -115,7 +115,7 @@ def create_base_script(zip_size,settings):
     rv += '# Setup up the data server files...\n'
     print('Creating paths:')
     for key in settings.paths.keys():
-        print('\t' + settings.path[key])
+        print('\t' + settings.paths[key])
         rv += 'mkdir -p ' + settings.paths[key] + '\n'
 
     rv += '# Setup up the python virtual environment...\n'
