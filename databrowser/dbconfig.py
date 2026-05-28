@@ -37,7 +37,8 @@ class DBSettings(config.Settings):
         super().__init__()
         self.use_metric = DEFAULT_USE_METRIC
         self.secret = DEFAULT_SECRET
-        self.passwd = DEFAULT_PASSWORD
+        #self.passwd = DEFAULT_PASSWORD
+        self.passwd = ''
 
     def set_use_metric(self,v):
         self.use_metric = v
