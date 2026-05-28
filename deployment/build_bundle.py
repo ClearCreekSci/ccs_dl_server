@@ -207,7 +207,7 @@ def run(args):
         fd.write('StartLimitIntervalSec=300\n')
         fd.write('#StartLimitBurst=5\n')
         fd.write('[Service]\n')
-        fd.write('WorkingDirectory=' + settings.paths[TAG_BASE))
+        fd.write('WorkingDirectory=' + settings.paths[TAG_BASE])
         s = 'ExecStart=CCS_DS_CFG_PATH='
         s += os.path.join(settings.paths[TAG_BASE],SETTINGS_FILE_NAME)
         s += ' CCS_DS_MAN_PATH='
