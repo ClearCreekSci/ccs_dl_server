@@ -210,11 +210,11 @@ def run(args):
         fd.write('#StartLimitBurst=5\n')
         fd.write('[Service]\n')
         fd.write('WorkingDirectory=' + settings.paths[TAG_BASE] + '\n')
-        s = 'ExecStart="CCS_DS_CFG_PATH='
-        s += os.path.join(settings.paths[TAG_BASE],SETTINGS_FILE_NAME)
-        s += ' CCS_DS_MAN_PATH='
-        s += os.path.join(settings.paths[TAG_BASE],MANIFEST_NAME)
-        s += ' '
+        s = 'Environment="CCS_DS_MAN_PATH=' + os.path.join(settings.paths[TAG_BASE],MANIFEST_NAME) + '"\n'
+        fd.write(s)
+        s = 'Environment="CCS_DS_CFG_PATH=' + os.path.join(settings.paths[TAG_BASE],SETTINGS_FILE_NAME) + '"\n'
+        fd.write(s)
+        s = 'ExecStart='
         venv_dir = os.path.join(settings.paths[TAG_BASE],VENV_NAME)
         s += os.path.join(venv_dir,'bin/python3')
         s += ' ' + os.path.join(settings.paths[TAG_BASE],'run.py"\n')
