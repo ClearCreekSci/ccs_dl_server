@@ -28,7 +28,7 @@ from databrowser.logging import logmsg
 
 if '__main__' == __name__:
     if len(cfg.passwd) == 0:
-        logmsg(cfg,__name__,'Writing default password',0)
+        logmsg(cfg,__name__,'Writing default password')
         cfg.passwd = bcrypt.generate_password_hash(defaultpassword).decode('utf-8')
         cfg.write(configpath)
     initlog(cfg)
