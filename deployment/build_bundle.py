@@ -29,7 +29,7 @@ SITE_DIR                = 'site-packages'
 DATASERVER_DST          = TOPLEVEL_DST + '/DataServer'
 SYSTEMD_SERVICE_DST     = '/etc/systemd/system'
 UNZIP_DST               = './unzip'
-SETTINGS_FILE_NAME      = './settings.cfg'
+SETTINGS_FILE_NAME      = 'settings.cfg'
 SERVICE_FILE_NAME       = './system/ccsdataserver.service'
 VENV_NAME               = 'venv'
 
@@ -55,7 +55,7 @@ class Settings(object):
                 raise InvalidSettingsFileException('No paths element in settings file: ' + str(path)) 
         else:
             raise InvalidSettingsFileException(str(path) + ' is not a valid settings file') 
-        if False == (TAG_BASE in settings.paths.keys()):
+        if False == (TAG_BASE in self.paths.keys()):
             raise InvalidSettingsFileException('No base path found in settings file: ' + str(path)) 
 
 
@@ -207,14 +207,14 @@ def run(args):
         fd.write('StartLimitIntervalSec=300\n')
         fd.write('#StartLimitBurst=5\n')
         fd.write('[Service]\n')
-        fd.write('WorkingDirectory=' + settings.paths[TAG_BASE])
+        fd.write('WorkingDirectory=' + settings.paths[TAG_BASE] + '\n')
         s = 'ExecStart=CCS_DS_CFG_PATH='
         s += os.path.join(settings.paths[TAG_BASE],SETTINGS_FILE_NAME)
         s += ' CCS_DS_MAN_PATH='
         s += os.path.join(settings.paths[TAG_BASE],MANIFEST_NAME)
         s += ' '
         venv_dir = os.path.join(settings.paths[TAG_BASE],VENV_NAME)
-        s += os.path.joint(venv_dir,'/bin/python3')
+        s += os.path.join(venv_dir,'bin/python3')
         s += ' ' + os.path.join(settings.paths[TAG_BASE],'run.py\n')
         fd.write(s)
         fd.write('Restart=on-failure\n')
@@ -238,7 +238,7 @@ def run(args):
         zf.mkdir('templates')
         add_glob_to_zip(zf,'../templates','./templates','*')
         zf.mkdir('system')
-        add_glob_to_zip(zf,'../system','./system','*')
+        add_glob_to_zip(zf,'./system','./system','*')
 
     zip_size = os.path.getsize(zip_name)
 
