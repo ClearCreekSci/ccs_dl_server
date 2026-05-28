@@ -89,9 +89,8 @@ def create_base_script(zip_size,settings):
     rv = ''
     # Create the base script
     rv = '#!/usr/bin/bash\n'
-    # FIXME: Get rid of these macros, make it configurable...
-    rv += 'TOPLEVEL_DST="/opt/ccs"\n'
-    rv += 'VENV_DST="${TOPLEVEL_DST}/venv_dataserver"\n'
+    rv += 'TOPLEVEL_DST="' + settings.paths[TAG_BASE] + '"\n'
+    rv += 'VENV_DST="${TOPLEVEL_DST}/' + VENV_NAME + '"\n'
     rv += 'VENV_LIB_DIR="${VENV_DST}/lib"\n'
 
     rv += 'if [ ! $EUID -eq 0 ]; then\n'
@@ -104,18 +103,19 @@ def create_base_script(zip_size,settings):
     rv += '    echo "Unable to connect to internet to download required Python files. Installation failed."\n'
     rv += '    exit\n'
     rv += 'fi\n'
-    rv += 'ME=$(basename "$0")\n'
-    rv += 'mkdir ' + UNZIP_DST + '\n'
-        # Extract the zip file from the install script
-    rv += 'dd bs=1 if="$ME" of=script.zip skip=' + SCRIPT_LEN_REPLACE_STR + ' count=' + str(zip_size) + '\n'
-
     rv += 'echo "Extracting files..."\n'
     rv += 'rm -rf ' + UNZIP_DST + '\n'
     rv += 'mkdir ' + UNZIP_DST + '\n'
+    rv += 'ME=$(basename "$0")\n'
+        # Extract the zip file from the install script
+    rv += 'dd bs=1 if="$ME" of=script.zip skip=' + SCRIPT_LEN_REPLACE_STR + ' count=' + str(zip_size) + '\n'
+
     rv += 'unzip -q -d ' + UNZIP_DST + ' script.zip\n'
 
     rv += '# Setup up the data server files...\n'
+    print('Creating paths:')
     for key in settings.paths.keys():
+        print('\t' + settings.path[key])
         rv += 'mkdir -p ' + settings.paths[key] + '\n'
 
     rv += '# Setup up the python virtual environment...\n'
