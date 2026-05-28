@@ -76,9 +76,9 @@ def get_settings(path):
             rv.read(path)
         except Exception as ex:
             rv = None
-            print('Exception reading settings file: ' + str(ex))
+            sys.stderr.print('Exception reading settings file: ' + str(ex))
     else:
-        print("Couldn't find settings file: " + str(path))
+        sys.stderr.print("Couldn't find settings file: " + str(path))
     return rv
 
 def add_glob_to_zip(zf,src,dst,glob_str):
@@ -117,9 +117,7 @@ def create_base_script(zip_size,settings):
     rv += 'unzip -q -d ' + UNZIP_DST + ' script.zip\n'
 
     rv += '# Setup up the data server files...\n'
-    print('Creating paths:')
     for key in settings.paths.keys():
-        print('\t' + settings.paths[key])
         rv += 'mkdir -p ' + settings.paths[key] + '\n'
 
     rv += '# Setup up the python virtual environment...\n'
