@@ -18,7 +18,8 @@ SCRIPT_SUFFIX           = '.sh'
 
 SCRIPT_LEN_REPLACE_STR  = '<***>'
 
-TAG_BASE                = 'paths'
+TAG_BASE                = 'base'
+TAG_LOG                 = 'log'
 TAG_NAME                = 'name'
 TAG_PATHS               = 'paths'
 TAG_ROOT                = 'ccs-config'
@@ -53,7 +54,10 @@ class Settings(object):
             else:
                 raise InvalidSettingsFileException('No paths element in settings file: ' + str(path)) 
         else:
-            raise InvalidSettingsFileException(path + ' is not a valid settings file') 
+            raise InvalidSettingsFileException(str(path) + ' is not a valid settings file') 
+        if False == (TAG_BASE in settings.paths.keys()):
+            raise InvalidSettingsFileException('No base path found in settings file: ' + str(path)) 
+
 
     def __repr__(self):
         rv = ''
@@ -203,15 +207,15 @@ def run(args):
         fd.write('StartLimitIntervalSec=300\n')
         fd.write('#StartLimitBurst=5\n')
         fd.write('[Service]\n')
-        fd.write('WorkingDirectory=' + settings.base)
+        fd.write('WorkingDirectory=' + settings.paths[TAG_BASE)
         s = 'ExecStart=CCS_DS_CFG_PATH='
-        s += os.path.join(settings.base,SETTINGS_FILE_NAME)
+        s += os.path.join(settings.paths[TAG_BASE],SETTINGS_FILE_NAME)
         s += ' CCS_DS_MAN_PATH='
-        s += os.path.join(settings.base,MANIFEST_NAME)
+        s += os.path.join(settings.paths[TAG_BASE],MANIFEST_NAME)
         s += ' '
-        venv_dir = os.path.join(settings.base,VENV_NAME)
+        venv_dir = os.path.join(settings.paths[TAG_BASE],VENV_NAME)
         s += os.path.joint(venv_dir,'/bin/python3')
-        s += ' ' + os.path.join(settings.base,'run.py\n')
+        s += ' ' + os.path.join(settings.paths[TAG_BASE],'run.py\n')
         fd.write(s)
         fd.write('Restart=on-failure\n')
         fd.write('RestartSec=10s\n')
