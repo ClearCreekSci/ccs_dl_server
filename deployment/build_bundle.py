@@ -264,7 +264,9 @@ def run(args):
             zip_buf = zfd.read()
         fd.write(zip_buf)
 
-    sys.stdout.write(install_script_name)
+    cwd = os.getcwd()
+    script_path = os.path.join(cwd,install_script_name)
+    sys.stdout.write(script_path)
     
 
 if '__main__' == __name__:
