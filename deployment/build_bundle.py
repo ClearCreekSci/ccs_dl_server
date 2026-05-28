@@ -1,7 +1,11 @@
+# build_bundle.py output the full path of the install file created.
+# If it fails to do so, the caller will assume an error
+
 import argparse
 import os
 import requests
 import subprocess
+import sys
 import zipfile
 
 import datetime as dt
@@ -260,7 +264,9 @@ def run(args):
         fd.write(script)
         with open(zip_name,'rb') as zfd:
             zip_buf = zfd.read()
-        fd.write(zip_buf) 
+        fd.write(zip_buf)
+
+    sys.stdout.write(install_script_name)
     
 
 if '__main__' == __name__:
