@@ -233,6 +233,7 @@ def run(args):
         zf.write('../requirements.txt','./requirements.txt')
         zf.mkdir('databrowser')
         add_glob_to_zip(zf,'../databrowser','./databrowser','*')
+        add_glob_to_zip(zf,'../databrowser/ccs_base','./databrowser/ccs_base','*')
         zf.mkdir('ccs_dlconfig')
         add_glob_to_zip(zf,'../ccs_dlconfig','./ccs_dlconfig','*.py')
         zf.mkdir('static')
