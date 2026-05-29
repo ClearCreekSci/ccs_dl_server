@@ -205,19 +205,19 @@ def run(args):
     # Create the systemd service file
     with open(SERVICE_FILE_NAME,'wt') as fd:
         fd.write('[Unit]\n')
-        fd.write('# Description=Clear Creek Scientific Data Server\n')
+        fd.write('Description=Clear Creek Scientific Data Server\n')
         fd.write('StartLimitIntervalSec=300\n')
         fd.write('#StartLimitBurst=5\n')
         fd.write('[Service]\n')
         fd.write('WorkingDirectory=' + settings.paths[TAG_BASE] + '\n')
-        s = 'Environment="CCS_DS_MAN_PATH=' + os.path.join(settings.paths[TAG_BASE],MANIFEST_NAME) + '"\n'
+        s = 'Environment="CCS_DS_MAN_PATH=' + settings.paths[TAG_BASE] + '/' + MANIFEST_NAME + '"\n'
         fd.write(s)
-        s = 'Environment="CCS_DS_CFG_PATH=' + os.path.join(settings.paths[TAG_BASE],SETTINGS_FILE_NAME) + '"\n'
+        s = 'Environment="CCS_DS_CFG_PATH=' + settings.paths[TAG_BASE] + '/' + SETTINGS_FILE_NAME + '"\n'
         fd.write(s)
         s = 'ExecStart='
-        venv_dir = os.path.join(settings.paths[TAG_BASE],VENV_NAME)
-        s += os.path.join(venv_dir,'bin/python3')
-        s += ' ' + os.path.join(settings.paths[TAG_BASE],'run.py\n')
+        venv_dir = settings.paths[TAG_BASE] + '/' + VENV_NAME
+        s += venv_dir + '/bin/python3'
+        s += ' ' + settings.paths[TAG_BASE] + '/run.py\n')
         fd.write(s)
         fd.write('Restart=on-failure\n')
         fd.write('RestartSec=10s\n')
