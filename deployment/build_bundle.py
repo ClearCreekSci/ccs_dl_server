@@ -217,7 +217,7 @@ def run(args):
         s = 'ExecStart='
         venv_dir = os.path.join(settings.paths[TAG_BASE],VENV_NAME)
         s += os.path.join(venv_dir,'bin/python3')
-        s += ' ' + os.path.join(settings.paths[TAG_BASE],'run.py"\n')
+        s += ' ' + os.path.join(settings.paths[TAG_BASE],'run.py\n')
         fd.write(s)
         fd.write('Restart=on-failure\n')
         fd.write('RestartSec=10s\n')
