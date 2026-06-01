@@ -1,6 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ccs-ui ns="ccs_data_logger">
+<ccs-ui ns="ccs_dl_server">
     <types>
+        <struct>
+           <ns>server</ns>
+           <name>config</name>
+           <desc>Configure values specific to the http server</desc>
+           <member>
+               <name>version</name>
+               <type>int</type>
+               <desc>current version</desc>
+           </member>
+           <member>
+               <name>secret</name>
+               <type>string</type>
+               <desc>bcrypt secret used to encrypt passwords</desc>
+           </member>
+           <member>
+               <name>password</name>
+               <type>string</type>
+               <desc>unencrypted password will be converted to a hash</desc>
+           </member>
+        </struct>
     </types>
     <ui>
         <object>
@@ -15,10 +35,12 @@
             </defaults>
         </object>
         <object>
-            <name>version</name>
-	    <type>string</type>
+            <name>data-browser</name>
+	    <type>server:config</type>
             <defaults>
-                <version>1</version>
+		    <version>1</version>
+                    <secret>deadbeef</secret>
+                    <password>MeasureYourWorld</password>
             </defaults>
         </object>
     </ui>

@@ -27,6 +27,7 @@ TAG_LOG                 = 'log'
 TAG_NAME                = 'name'
 TAG_PATHS               = 'paths'
 TAG_ROOT                = 'ccs-config'
+TAG_VERSION             = 'version'
 
 TOPLEVEL_DST            = '/opt/ccs'
 SITE_DIR                = 'site-packages'
@@ -44,6 +45,7 @@ class Settings(object):
 
     def __init__(self):
         self.paths = dict()
+        self.version = DEFAULT_VERSION
 
     def read(self,path):
         tree = et.parse(path)
@@ -56,7 +58,7 @@ class Settings(object):
                     value = path_node.text.strip()
                     self.paths[name] = value
             else:
-                raise InvalidSettingsFileException('No paths element in settings file: ' + str(path)) 
+                raise InvalidSettingsFileException('No paths element in settings file: ' + str(path))
         else:
             raise InvalidSettingsFileException(str(path) + ' is not a valid settings file') 
         if False == (TAG_BASE in self.paths.keys()):
