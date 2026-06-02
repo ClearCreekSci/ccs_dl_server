@@ -22,7 +22,7 @@
            </member>
 	   <member>
                <name>metric</name>
-               <type>boolean</name>
+               <type>boolean</type>
 	       <desc>If true, use metric units for display, otherwise, use Imperial</desc>
            </member>
         </struct>
