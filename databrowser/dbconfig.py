@@ -19,6 +19,7 @@
 
 """
 from ccs_dlconfig import config
+from ccs_dlconfig import interpret_boolean_value
 import xml.etree.ElementTree as et
 
 TAG_INTERNAL = 'internal'
@@ -62,6 +63,9 @@ class DBSettings(config.Settings):
                         self.passwd = ''
                     else:
                         self.passwd = password.text.strip()
+                metric = node.find(TAG_USE_METRIC)
+                if None is not metric:
+                    self.use_metric = interpret_boolean_value(metric.text.strip())
         except FileNotFoundError as ex:
             self.write(path)
             self.read(path)
@@ -72,6 +76,7 @@ class DBSettings(config.Settings):
             fd.write('<' + TAG_INTERNAL + '>\n')
             fd.write('<' + TAG_SECRET + '>' + str(self.secret) + '</' + TAG_SECRET + '>\n')
             fd.write('<' + TAG_PHASH + '>' + str(self.passwd) + '</' + TAG_PHASH + '>\n')
+            fd.write('<' + TAG_USE_METRIC + '>' + str(self.use_metric) + '</' + TAG_USE_METRIC + '>\n')
             fd.write('</' + TAG_INTERNAL + '>\n')
             self.write_suffix(fd)
 
