@@ -94,8 +94,8 @@ class Settings(object):
                 fd.write('<' + TAG_PHASH + '>')
                 fd.write(str(self.phash))
                 fd.write('</' + TAG_PHASH + '>\n')
-            fd.write('</' + TAG_DATA_BROWSER + '>\n'
-            fd.write('</' + TAG_ROOT + '>\n'
+            fd.write('</' + TAG_DATA_BROWSER + '>\n')
+            fd.write('</' + TAG_ROOT + '>\n')
 
     def set_hash_function(self,v):
         self.hash_func = v
