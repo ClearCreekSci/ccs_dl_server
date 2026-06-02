@@ -21,7 +21,7 @@
 from ccs_dlconfig import config
 import xml.etree.ElementTree as et
 
-TAG_BROWSER = 'data-browser'
+TAG_INTERNAL = 'internal'
 TAG_PHASH = 'phash'
 TAG_SECRET = 'secret'
 TAG_USE_METRIC = 'metric'
@@ -52,7 +52,7 @@ class DBSettings(config.Settings):
     def read(self,path):
         try:
             super().read(path)
-            for node in self.root.findall(TAG_BROWSER):
+            for node in self.root.findall(TAG_INTERNAL):
                 secret = node.find(TAG_SECRET)
                 if None is not secret:
                     self.secret = secret.text.strip()
@@ -69,9 +69,9 @@ class DBSettings(config.Settings):
     def write(self,path):
         with open(path,'wt') as fd:
             self.write_prefix(fd)
-            fd.write('<' + TAG_BROWSER + '>\n')
+            fd.write('<' + TAG_INTERNAL + '>\n')
             fd.write('<' + TAG_SECRET + '>' + str(self.secret) + '</' + TAG_SECRET + '>\n')
             fd.write('<' + TAG_PHASH + '>' + str(self.passwd) + '</' + TAG_PHASH + '>\n')
-            fd.write('</' + TAG_BROWSER + '>\n')
+            fd.write('</' + TAG_INTERNAL + '>\n')
             self.write_suffix(fd)
 

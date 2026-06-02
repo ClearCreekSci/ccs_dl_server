@@ -24,7 +24,7 @@ SCRIPT_SUFFIX           = '.sh'
 SCRIPT_LEN_REPLACE_STR  = '<***>'
 
 TAG_BASE                = 'base'
-TAG_DATA_BROWSER        = 'data-browser'
+TAG_INTERNAL            = 'internal'
 TAG_LOG                 = 'log'
 TAG_NAME                = 'name'
 TAG_PASSWORD            = 'pword'

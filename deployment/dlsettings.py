@@ -7,7 +7,7 @@ ATTRIB_VERSION     = 'version'
 
 TAG_BASE           = 'base'
 TAG_CSV            = 'csv'
-TAG_DATA_BROWSER   = 'data-browser'
+TAG_INTERNAL       = 'internal'
 TAG_LOG            = 'log'
 TAG_PASSWORD       = 'password'
 TAG_PATHS          = 'paths'
@@ -44,19 +44,19 @@ class Settings(object):
                     self.paths[name] = value
             else:
                 raise InvalidSettingsFileException('No paths element in settings file: ' + str(path))
-            databrowser_node = root.find(TAG_DATA_BROWSER)
-            if None is not databrowser_node:
-                 version_node = databrowser_node.find(TAG_VERSION)
+            internal_node = root.find(TAG_INTERNAL)
+            if None is not internal_node:
+                 version_node = internal_node.find(TAG_VERSION)
                  if None is not version_node:
                      self.version = version_node.text.strip()
-                 secret_node = databrowser_node.find(TAG_SECRET)
+                 secret_node = internal.find(TAG_SECRET)
                  if None is not secret_node:
                      self.secret = secret_node.text.strip()
-                 password_node = databrowser_node.find(TAG_SECRET)
+                 password_node = internal.find(TAG_SECRET)
                  if None is not password_node:
                      self.password = password_node.text.strip()
             else:
-                raise InvalidSettingsFileException('No data-browser element in settings file: ' + str(path))
+                raise InvalidSettingsFileException('No "internal" element in settings file: ' + str(path))
         else:
             raise InvalidSettingsFileException(str(path) + ' is not a valid settings file') 
         if False == (TAG_BASE in self.paths.keys()):
@@ -65,7 +65,7 @@ class Settings(object):
     def write(self,path):
         with open(path,'wt') as fd:
             fd.write(XML_PREFIX + '\n')
-            fd.write('<' + TAG_ROOT + ' version=' + str(XML_VERSION) + '>\n')
+            fd.write('<' + TAG_ROOT + ' ' + ATTRIB_VERSION + '="' + str(XML_VERSION) + '">\n')
             fd.write('<' + TAG_PATHS + '>\n')
             fd.write('<' + TAG_BASE + '>')
             fd.write(str(self.paths[TAG_BASE]))
