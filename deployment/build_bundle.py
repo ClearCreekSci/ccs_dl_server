@@ -180,7 +180,7 @@ def run(args):
         sys.stderr.write('[!] Base path not found\n')
         return
 
-    if settings.version is not None:
+    if (settings.version is not None) and (len(settings.version) > 0):
         version = settings.version
 
     # Create the manifest

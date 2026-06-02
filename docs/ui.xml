@@ -7,8 +7,8 @@
            <desc>Configure values specific to the http server</desc>
            <member>
                <name>version</name>
-               <type>int</type>
-               <desc>configuration defined version</desc>
+               <type>string</type>
+               <desc>user-defined version</desc>
            </member>
            <member>
                <name>secret</name>
