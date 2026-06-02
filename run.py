@@ -27,11 +27,11 @@ from databrowser.logging import initlog
 from databrowser.logging import logmsg 
 
 if '__main__' == __name__:
+    initlog(cfg)
     if len(cfg.passwd) == 0:
         logmsg(cfg,__name__,'Writing default password')
         cfg.passwd = bcrypt.generate_password_hash(defaultpassword).decode('utf-8')
         cfg.write(configpath)
-    initlog(cfg)
     logmsg(cfg,__name__,'Starting app')
     app.run(debug=False,host='0.0.0.0',port=5000)
 
