@@ -122,7 +122,7 @@ def create_base_script(zip_size,settings):
     rv += '    PYTHON_VER=`basename "${entry}"`\n'
     rv += 'done\n'
 
-    rv += 'pushd UNZIP_DST\n'
+    rv += 'pushd ' + UNZIP_DST + '\n'
     rv += 'python rewrite_settings.py\n'
     rv += 'popd\n'
 
