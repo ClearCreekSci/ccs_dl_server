@@ -158,8 +158,6 @@ def run(args):
     version = DEFAULT_VERSION
     if None is not args.prefix:
         prefix = args.prefix
-    if None is not args.version:
-        version = args.version
     if None is not args.commit:
         commit = args.commit
     else:
@@ -172,10 +170,17 @@ def run(args):
 
     settings = get_settings(SETTINGS_FILE_NAME)
     if None is settings:
+        sys.stderr.write('[!] settings is NULL\n')
         return
 
     if TAG_BASE in settings.paths.keys():
         DATASERVER_DST = settings.paths[TAG_BASE]
+    else:
+        sys.stderr.write('[!] Base path not found\n')
+        return
+
+    if settings.version is not None:
+        version = settings.version
 
     # Create the manifest
     with open(MANIFEST_NAME,'wt') as fd:
@@ -258,6 +263,7 @@ def run(args):
 
 if '__main__' == __name__:
     parser = argparse.ArgumentParser()
+    # We ignore the version that is passed in
     parser.add_argument('-v','--version',help='version string')
     parser.add_argument('-c','--commit',help='commit string')
     parser.add_argument('-p','--prefix',help='prefix string')
