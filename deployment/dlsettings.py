@@ -18,6 +18,9 @@ TAG_SECRET         = 'secret'
 TAG_VERSION        = 'version'
 TAG_VIDEOS         = 'videos'
 
+DEFAULT_VERSION    = 1
+DEFAULT_PASSWORD   = 'MeasureYourWorld'
+DEFAULT_SECRET     = 'cafebeef'
 
 class Settings(object):
 
