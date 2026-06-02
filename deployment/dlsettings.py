@@ -62,25 +62,25 @@ class Settings(object):
     def write(self,path):
         with open(path,'wt') as fd:
             fd.write(XML_PREFIX + '\n')
-            fd.write('<' + TAG_ROOT + ' version=' + str(XML_VERSION) + '>\n'
-            fd.write('<' + TAG_PATHS + '>\n'
-            fd.write('<' + TAG_BASE + '>'
+            fd.write('<' + TAG_ROOT + ' version=' + str(XML_VERSION) + '>\n')
+            fd.write('<' + TAG_PATHS + '>\n')
+            fd.write('<' + TAG_BASE + '>')
             fd.write(str(self.paths[TAG_BASE]))
-            fd.write('</' + TAG_BASE + '>\n'
-            fd.write('<' + TAG_LOG + '>'
+            fd.write('</' + TAG_BASE + '>\n')
+            fd.write('<' + TAG_LOG + '>')
             fd.write(str(self.paths[TAG_LOG]))
-            fd.write('</' + TAG_LOG + '>\n'
-            fd.write('<' + TAG_CSV + '>'
+            fd.write('</' + TAG_LOG + '>\n')
+            fd.write('<' + TAG_CSV + '>')
             fd.write(str(self.paths[TAG_CSV]))
-            fd.write('</' + TAG_CSV + '>\n'
-            fd.write('<' + TAG_PHOTOS + '>'
+            fd.write('</' + TAG_CSV + '>\n')
+            fd.write('<' + TAG_PHOTOS + '>')
             fd.write(str(self.paths[TAG_PHOTOS]))
-            fd.write('</' + TAG_PHOTOS + '>\n'
-            fd.write('<' + TAG_VIDEOS + '>'
+            fd.write('</' + TAG_PHOTOS + '>\n')
+            fd.write('<' + TAG_VIDEOS + '>')
             fd.write(str(self.paths[TAG_VIDEOS]))
-            fd.write('</' + TAG_VIDEOS + '>\n'
-            fd.write('</' + TAG_PATHS + '>\n'
-            fd.write('<' + TAG_DATA_BROWSER + '>\n'
+            fd.write('</' + TAG_VIDEOS + '>\n')
+            fd.write('</' + TAG_PATHS + '>\n')
+            fd.write('<' + TAG_DATA_BROWSER + '>\n')
             fd.write('<' + TAG_VERSION + '>')
             fd.write(str(self.version))
             fd.write('</' + TAG_VERSION + '>\n')
