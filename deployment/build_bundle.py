@@ -6,6 +6,7 @@ import dlsettings
 import os
 import requests
 import subprocess
+import stat
 import sys
 import zipfile
 
