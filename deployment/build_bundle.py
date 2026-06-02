@@ -145,8 +145,8 @@ def create_base_script(zip_size,settings):
     rv += 'systemctl enable ccsdataserver.service\n'
     rv += 'systemctl start ccsdataserver.service\n'
 
-    rv += 'rm -rf ' + UNZIP_DST + '\n'
-    rv += 'rm -rf script.zip\n'
+    #rv += 'rm -rf ' + UNZIP_DST + '\n'
+    #rv += 'rm -rf script.zip\n'
     rv += 'echo "Installation completed succesfully."\n'
     rv += 'exit\n'
     return rv
