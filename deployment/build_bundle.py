@@ -117,10 +117,10 @@ def create_base_script(zip_size,settings):
     rv += 'pip install -r ' + UNZIP_DST + '/requirements.txt\n'
 
     # FIXME: DO WE NEED THIS?
-    rv += 'for entry in "${VENV_LIB_DIR}"/*\n'
-    rv += 'do\n'
-    rv += '    PYTHON_VER=`basename "${entry}"`\n'
-    rv += 'done\n'
+    #rv += 'for entry in "${VENV_LIB_DIR}"/*\n'
+    #rv += 'do\n'
+    #rv += '    PYTHON_VER=`basename "${entry}"`\n'
+    #rv += 'done\n'
 
     rv += 'pushd ' + UNZIP_DST + '\n'
     rv += 'python rewrite_settings.py\n'
