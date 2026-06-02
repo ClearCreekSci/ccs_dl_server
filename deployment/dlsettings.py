@@ -83,7 +83,7 @@ class Settings(object):
             fd.write(str(self.paths[TAG_VIDEOS]))
             fd.write('</' + TAG_VIDEOS + '>\n')
             fd.write('</' + TAG_PATHS + '>\n')
-            fd.write('<' + TAG_DATA_BROWSER + '>\n')
+            fd.write('<' + TAG_INTERNAL + '>\n')
             fd.write('<' + TAG_VERSION + '>')
             fd.write(str(self.version))
             fd.write('</' + TAG_VERSION + '>\n')
@@ -97,7 +97,7 @@ class Settings(object):
                 fd.write('<' + TAG_PHASH + '>')
                 fd.write(str(self.phash))
                 fd.write('</' + TAG_PHASH + '>\n')
-            fd.write('</' + TAG_DATA_BROWSER + '>\n')
+            fd.write('</' + TAG_INTERNAL + '>\n')
             fd.write('</' + TAG_ROOT + '>\n')
 
     def set_hash_function(self,v):

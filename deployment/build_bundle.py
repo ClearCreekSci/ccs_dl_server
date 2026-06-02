@@ -255,6 +255,7 @@ def run(args):
         with open(zip_name,'rb') as zfd:
             zip_buf = zfd.read()
         fd.write(zip_buf)
+    os.chmod(install_script_name,stat.IRWXU|stat.S_IRGRP|stat.S_IRGRP|stat.s_IROTH)
 
     cwd = os.getcwd()
     script_path = os.path.join(cwd,install_script_name)
