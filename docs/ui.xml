@@ -35,11 +35,11 @@
             </defaults>
         </object>
         <object>
-            <name>data-browser</name>
+            <name>interal</name>
 	    <type>server:config</type>
             <defaults>
 		    <version>1</version>
-                    <secret>deadbeef</secret>
+                    <secret>cafebeef</secret>
                     <password>MeasureYourWorld</password>
             </defaults>
         </object>
