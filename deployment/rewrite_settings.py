@@ -1,5 +1,5 @@
 
-from databrowser import bcrypt
+import bcrypt
 import dlsettings
 
 
@@ -7,7 +7,9 @@ SETTINGS_NAME = 'settings.cfg'
 
 
 def hash_value(v):
-    return bcrypt.generate_password_hash(v).decode('utf-8')
+    salt = bcrypt.gensalt()
+    pw = v.encode('utf-8')
+    return bcrypt.hashpw(pw,salt)
 
 
 if '__main__' == __name__:
