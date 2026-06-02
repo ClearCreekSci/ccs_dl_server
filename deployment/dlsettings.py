@@ -9,6 +9,7 @@ TAG_BASE           = 'base'
 TAG_CSV            = 'csv'
 TAG_INTERNAL       = 'internal'
 TAG_LOG            = 'log'
+TAG_METRIC         = 'metric'
 TAG_PASSWORD       = 'password'
 TAG_PATHS          = 'paths'
 TAG_PHASH          = 'phash'
@@ -22,6 +23,10 @@ DEFAULT_VERSION    = 1
 DEFAULT_PASSWORD   = 'MeasureYourWorld'
 DEFAULT_SECRET     = 'cafebeef'
 
+TRUE_LIST = ['TRUE','True','true','T','t','YES','Yes','yes','Y','y','1']
+def interpret_boolean_value(s: str) -> bool:
+    return s in TRUE_LIST
+
 class Settings(object):
 
     def __init__(self):
@@ -31,6 +36,7 @@ class Settings(object):
         self.secret = DEFAULT_SECRET
         self.phash = None
         self.hash_func = None
+        self.use_metric = True
 
     def read(self,path):
         tree = et.parse(path)
@@ -55,6 +61,9 @@ class Settings(object):
                  password_node = internal_node.find(TAG_SECRET)
                  if None is not password_node:
                      self.password = password_node.text.strip()
+                 metric_node = internal_node.find(TAG_METRIC)
+                 if None is not metric_node:
+                     self.use_metric = interpret_boolean_value(metric_node.text.strip())
             else:
                 raise InvalidSettingsFileException('No "internal" element in settings file: ' + str(path))
         else:
@@ -97,6 +106,9 @@ class Settings(object):
                 fd.write('<' + TAG_PHASH + '>')
                 fd.write(str(self.phash))
                 fd.write('</' + TAG_PHASH + '>\n')
+            fd.write('<' + TAG_METRIC + '>')
+            fd.write(str(self.use_metric))
+            fd.write('</' + TAG_METRIC + '>\n')
             fd.write('</' + TAG_INTERNAL + '>\n')
             fd.write('</' + TAG_ROOT + '>\n')
 
@@ -110,5 +122,6 @@ class Settings(object):
         rv += 'secret: ' + str(self.secret) + '\n'
         rv += 'password: ' + str(self.password) + '\n'
         rv += 'phash: ' + str(self.phash) + '\n'
+        rv += 'metric: ' + str(self.metric) + '\n'
         return rv
 

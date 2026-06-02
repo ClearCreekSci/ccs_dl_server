@@ -13,12 +13,12 @@
            <member>
                <name>secret</name>
                <type>string</type>
-               <desc>secret used for encryption</desc>
+               <desc>key used to encrypt session cookies and other tokens</desc>
            </member>
            <member>
                <name>password</name>
                <type>string</type>
-               <desc>unencrypted password- will be converted to a hash</desc>
+               <desc>unencrypted password- will be converted to a hash on deployment</desc>
            </member>
 	   <member>
                <name>metric</name>
