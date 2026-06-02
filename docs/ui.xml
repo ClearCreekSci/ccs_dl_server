@@ -8,17 +8,22 @@
            <member>
                <name>version</name>
                <type>int</type>
-               <desc>current version</desc>
+               <desc>configuration defined version</desc>
            </member>
            <member>
                <name>secret</name>
                <type>string</type>
-               <desc>bcrypt secret used to encrypt passwords</desc>
+               <desc>secret used for encryption</desc>
            </member>
            <member>
                <name>password</name>
                <type>string</type>
-               <desc>unencrypted password will be converted to a hash</desc>
+               <desc>unencrypted password- will be converted to a hash</desc>
+           </member>
+	   <member>
+               <name>metric</name>
+               <type>boolean</name>
+	       <desc>If true, use metric units for display, otherwise, use Imperial</desc>
            </member>
         </struct>
     </types>
@@ -41,6 +46,7 @@
 		    <version>1</version>
                     <secret>cafebeef</secret>
                     <password>MeasureYourWorld</password>
+                    <metric>true</metric>
             </defaults>
         </object>
     </ui>
