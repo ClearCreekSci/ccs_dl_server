@@ -35,7 +35,7 @@
             </defaults>
         </object>
         <object>
-            <name>interal</name>
+            <name>internal</name>
 	    <type>server:config</type>
             <defaults>
 		    <version>1</version>
