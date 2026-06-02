@@ -40,7 +40,7 @@ DATASERVER_DST          = TOPLEVEL_DST + '/DataServer'
 SYSTEMD_SERVICE_DST     = '/etc/systemd/system'
 UNZIP_DST               = './unzip'
 SETTINGS_FILE_NAME      = 'settings.cfg'
-SERVICE_FILE_NAME       = './system/ccsdataserver.service'
+SERVICE_FILE_NAME       = 'ccsdataserver.service'
 VENV_NAME               = 'venv'
 
 class InvalidSettingsFileException(Exception):
@@ -139,7 +139,7 @@ def create_base_script(zip_size,settings):
     rv += 'cp -r  ' + UNZIP_DST + '/databrowser ' + DATASERVER_DST + '\n'
     rv += 'cp -r  ' + UNZIP_DST + '/static ' + DATASERVER_DST + '\n'
     rv += 'cp -r  ' + UNZIP_DST + '/templates ' + DATASERVER_DST + '\n'
-    rv += 'cp ' + UNZIP_DST + '/system/ccsdataserver.service ' + SYSTEMD_SERVICE_DST + '\n'
+    rv += 'cp ' + UNZIP_DST + 'ccsdataserver.service ' + SYSTEMD_SERVICE_DST + '\n'
 
     rv += 'echo "Creating ccsdataserver systemd service..."\n'
     rv += 'systemctl daemon-reload\n'
