@@ -49,10 +49,10 @@ class Settings(object):
                  version_node = internal_node.find(TAG_VERSION)
                  if None is not version_node:
                      self.version = version_node.text.strip()
-                 secret_node = internal.find(TAG_SECRET)
+                 secret_node = internal_node.find(TAG_SECRET)
                  if None is not secret_node:
                      self.secret = secret_node.text.strip()
-                 password_node = internal.find(TAG_SECRET)
+                 password_node = internal_node.find(TAG_SECRET)
                  if None is not password_node:
                      self.password = password_node.text.strip()
             else:

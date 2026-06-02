@@ -53,9 +53,9 @@ def get_settings(path):
             rv.read(path)
         except Exception as ex:
             rv = None
-            sys.stderr.write('Exception reading settings file: ' + str(ex))
+            sys.stderr.write('Exception reading settings file: ' + str(ex) + '\n')
     else:
-        sys.stderr.write("Couldn't find settings file: " + str(path))
+        sys.stderr.write("Couldn't find settings file: " + str(path) + '\n')
     return rv
 
 def add_glob_to_zip(zf,src,dst,glob_str):
