@@ -39,8 +39,8 @@
 	    <type>server:config</type>
             <defaults>
 		    <version>1</version>
-                    <sec>deadbeef</sec>
-                    <pword>MeasureYourWorld</pword>
+                    <secret>deadbeef</secret>
+                    <password>MeasureYourWorld</password>
             </defaults>
         </object>
     </ui>
