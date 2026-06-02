@@ -2,6 +2,7 @@
 # If it fails to do so, the caller will assume an error
 
 import argparse
+import dlsettings
 import os
 import requests
 import subprocess
@@ -23,10 +24,13 @@ SCRIPT_SUFFIX           = '.sh'
 SCRIPT_LEN_REPLACE_STR  = '<***>'
 
 TAG_BASE                = 'base'
+TAG_DATA_BROWSER        = 'data-browser'
 TAG_LOG                 = 'log'
 TAG_NAME                = 'name'
+TAG_PASSWORD            = 'pword'
 TAG_PATHS               = 'paths'
 TAG_ROOT                = 'ccs-config'
+TAG_SECRET              = 'sec'
 TAG_VERSION             = 'version'
 
 TOPLEVEL_DST            = '/opt/ccs'
@@ -41,40 +45,11 @@ VENV_NAME               = 'venv'
 class InvalidSettingsFileException(Exception):
     pass
 
-class Settings(object):
-
-    def __init__(self):
-        self.paths = dict()
-        self.version = DEFAULT_VERSION
-
-    def read(self,path):
-        tree = et.parse(path)
-        root = tree.getroot()
-        if root.tag == TAG_ROOT:
-            paths_node = root.find(TAG_PATHS)
-            if None is not paths_node:
-                for path_node in paths_node:
-                    name = path_node.tag.strip()
-                    value = path_node.text.strip()
-                    self.paths[name] = value
-            else:
-                raise InvalidSettingsFileException('No paths element in settings file: ' + str(path))
-        else:
-            raise InvalidSettingsFileException(str(path) + ' is not a valid settings file') 
-        if False == (TAG_BASE in self.paths.keys()):
-            raise InvalidSettingsFileException('No base path found in settings file: ' + str(path)) 
-
-
-    def __repr__(self):
-        rv = ''
-        rv += 'paths: ' + str(self.paths) + '\n'
-        return rv
-
 def get_settings(path):
     rv = None
     if os.path.exists(path):
         try:
-            rv = Settings()
+            rv = dlsettings.Settings()
             rv.read(path)
         except Exception as ex:
             rv = None
@@ -141,10 +116,15 @@ def create_base_script(zip_size,settings):
 
     rv += 'pip install -r ' + UNZIP_DST + '/requirements.txt\n'
 
+    # FIXME: DO WE NEED THIS?
     rv += 'for entry in "${VENV_LIB_DIR}"/*\n'
     rv += 'do\n'
     rv += '    PYTHON_VER=`basename "${entry}"`\n'
     rv += 'done\n'
+
+    rv += 'python rewrite_settings.py\n'
+
+    # We can deactive the virtual environment, once we have run rewrite_settings.py 
     rv += 'deactivate\n'
 
     rv += '# Setup up the DataServer files...\n'
@@ -230,6 +210,8 @@ def run(args):
     zip_name = str(prefix) + '_v' + str(version) + ZIP_SUFFIX
     with zipfile.ZipFile(zip_name,mode='w') as zf:
         zf.write('settings.cfg','settings.cfg')
+        zf.write('dlsettings.py','dlsettings.py')
+        zf.write('rewrite_settings.py','rewrite_settings.py')
         zf.write('manifest.xml','manifest.xml')
         zf.write('../run.py','./run.py')
         zf.write('../requirements.txt','./requirements.txt')
