@@ -79,12 +79,25 @@ def create_base_script(zip_size,settings):
     rv += '    echo "Please run this install script as root"\n'
     rv += '    exit\n'
     rv += 'fi\n'
+
+    # See if we are uninstalling...
+    rv += 'if [ $# -ne 0 ]; then\n'
+    rv += '    if [ $1 == "-u" ]; then\n'
+    rv += '        echo "Uninstalling...\n' 
+    rv += '        systemctl stop ' + SERVICE_FILE_NAME + '\n'
+    rv += '        systemctl disable ' + SERVICE_FILE_NAME + '\n'
+    rv += '        rm ' + SYSTEMD_SERVICE_DST + '/' + SERVICE_FILE_NAME + '\n'
+    rv += '        rm -rf ' + DATASERVER_DST + '\n'
+    rv += '        exit\n'
+    rv += 'fi\n'
+
     rv += '# Make sure we can connect to the internets\n'
     rv += 'ping -c 1 google.com > /dev/null 2>&1\n'
     rv += 'if [ $? -ne 0 ]; then\n'
     rv += '    echo "Unable to connect to internet to download required Python files. Installation failed."\n'
     rv += '    exit\n'
     rv += 'fi\n'
+
     rv += 'echo "Extracting files..."\n'
     rv += 'rm -rf ' + UNZIP_DST + '\n'
     rv += 'mkdir ' + UNZIP_DST + '\n'
@@ -117,12 +130,6 @@ def create_base_script(zip_size,settings):
 
     rv += 'pip install -r ' + UNZIP_DST + '/requirements.txt\n'
 
-    # FIXME: DO WE NEED THIS?
-    #rv += 'for entry in "${VENV_LIB_DIR}"/*\n'
-    #rv += 'do\n'
-    #rv += '    PYTHON_VER=`basename "${entry}"`\n'
-    #rv += 'done\n'
-
     rv += 'pushd ' + UNZIP_DST + '\n'
     rv += 'python rewrite_settings.py\n'
     rv += 'popd\n'
@@ -143,8 +150,8 @@ def create_base_script(zip_size,settings):
 
     rv += 'echo "Creating ccsdataserver systemd service..."\n'
     rv += 'systemctl daemon-reload\n'
-    rv += 'systemctl enable ccsdataserver.service\n'
-    rv += 'systemctl start ccsdataserver.service\n'
+    rv += 'systemctl enable ' + SERVICE_FILE_NAME + '\n'
+    rv += 'systemctl start ' + SERVICE_FILE_NAME + '\n'
 
     #rv += 'rm -rf ' + UNZIP_DST + '\n'
     #rv += 'rm -rf script.zip\n'
