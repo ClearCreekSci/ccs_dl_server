@@ -146,7 +146,7 @@ def create_base_script(zip_size,settings):
     rv += 'cp -r  ' + UNZIP_DST + '/databrowser ' + DATASERVER_DST + '\n'
     rv += 'cp -r  ' + UNZIP_DST + '/static ' + DATASERVER_DST + '\n'
     rv += 'cp -r  ' + UNZIP_DST + '/templates ' + DATASERVER_DST + '\n'
-    rv += 'cp ' + UNZIP_DST + '/' + SERVICE_FILE_NAME + ' ' + SYSTEMD_SERVICE_DST + '\n'
+    rv += 'cp ' + UNZIP_DST + '/system/' + SERVICE_FILE_NAME + ' ' + SYSTEMD_SERVICE_DST + '\n'
 
     rv += 'echo "Creating ccsdataserver systemd service..."\n'
     rv += 'systemctl daemon-reload\n'
