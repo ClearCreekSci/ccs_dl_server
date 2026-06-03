@@ -200,7 +200,8 @@ def run(args):
         fd.write('</manifest>\n')
 
     # Create the systemd service file
-    with open(SERVICE_FILE_NAME,'wt') as fd:
+    service_file_path = os.path.join('system',SERVICE_FILE_NAME)
+    with open(service_file_path,'wt') as fd:
         fd.write('[Unit]\n')
         fd.write('Description=Clear Creek Scientific Data Server\n')
         fd.write('StartLimitIntervalSec=300\n')
