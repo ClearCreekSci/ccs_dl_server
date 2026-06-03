@@ -121,10 +121,6 @@ def parse_most_recent():
                 if len(header_parts) == len(data_parts):
                     idx = 0
                     for hp in header_parts:
-                        # Skip the date and time 
-                        if 0 == idx:
-                            idx += 1
-                            continue
                         hp = hp.strip()
                         label = ccs_base.getName(hp)
                         value = ccs_base.getValue(hp,data_parts[idx],cfg.use_metric)
