@@ -66,7 +66,6 @@ def add_glob_to_zip(zf,src,dst,glob_str):
         dst_path = os.path.join(dst,basename)
         zf.write(f,dst_path)
 
-# FIXME: WHAT ABOUT UNINSTALL?
 def create_base_script(zip_size,settings):
     rv = ''
     # Create the base script
@@ -89,6 +88,7 @@ def create_base_script(zip_size,settings):
     rv += '        rm ' + SYSTEMD_SERVICE_DST + '/' + SERVICE_FILE_NAME + '\n'
     rv += '        rm -rf ' + DATASERVER_DST + '\n'
     rv += '        exit\n'
+    rv += '    fi\n'
     rv += 'fi\n'
 
     rv += '# Make sure we can connect to the internets\n'
