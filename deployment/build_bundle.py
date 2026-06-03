@@ -83,7 +83,7 @@ def create_base_script(zip_size,settings):
     # See if we are uninstalling...
     rv += 'if [ $# -ne 0 ]; then\n'
     rv += '    if [ $1 == "-u" ]; then\n'
-    rv += '        echo "Uninstalling...\n' 
+    rv += '        echo "Uninstalling..."\n' 
     rv += '        systemctl stop ' + SERVICE_FILE_NAME + '\n'
     rv += '        systemctl disable ' + SERVICE_FILE_NAME + '\n'
     rv += '        rm ' + SYSTEMD_SERVICE_DST + '/' + SERVICE_FILE_NAME + '\n'
