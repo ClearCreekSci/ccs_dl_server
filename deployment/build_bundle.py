@@ -1,4 +1,24 @@
-# build_bundle.py output the full path of the install file created.
+'''
+    build_bundle.py
+    Starts the CCS Data Server (Flask application) 
+
+    Copyright (C) 2025 Clear Creek Scientific
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
+'''
+
+# build_bundle.py outputs the full path of the install file created.
 # If it fails to do so, the caller will assume an error
 
 import argparse

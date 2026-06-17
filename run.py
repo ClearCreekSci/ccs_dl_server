@@ -1,6 +1,6 @@
 '''
     run.py
-    OpenSCAD model for the CCS Data Logger enclosure
+    Starts the CCS Data Server (Flask application) 
 
     Copyright (C) 2025 Clear Creek Scientific
 
