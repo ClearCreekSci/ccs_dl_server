@@ -194,7 +194,10 @@ def run(args):
         # Posted by Eli Courtwright, modified by community. See post 'Timeline' for change history
         # Retrieved 2026-05-22, License - CC BY-SA 4.0
         commit = subprocess.Popen('git rev-parse HEAD', shell=True, stdout=subprocess.PIPE).stdout.read()
-        commit = str(commit).strip()
+        if commit is None:
+            commit = 'Unknown'
+        else:
+            commit = str(commit).strip()
 
     settings = get_settings(SETTINGS_FILE_NAME)
     if None is settings:
