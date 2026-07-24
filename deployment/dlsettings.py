@@ -104,7 +104,7 @@ class Settings(object):
                     self.phash = self.hash_func(self.password)
             if None is not self.phash:
                 fd.write('<' + TAG_PHASH + '>')
-                fd.write(str(self.phash))
+                fd.write(self.phash.decode('utf-8'))
                 fd.write('</' + TAG_PHASH + '>\n')
             fd.write('<' + TAG_METRIC + '>')
             fd.write(str(self.use_metric))
