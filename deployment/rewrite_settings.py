@@ -7,7 +7,10 @@ SETTINGS_NAME = 'settings.cfg'
 
 
 def hash_value(v):
-    salt = bcrypt.gensalt()
+    # Match default flask_bcrypt values
+    rounds = 12
+    prefix = '2b'
+    salt = bcrypt.gensalt(rounds,prefix)
     pw = v.encode('utf-8')
     return bcrypt.hashpw(pw,salt)
 

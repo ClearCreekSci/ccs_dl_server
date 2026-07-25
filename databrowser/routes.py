@@ -42,7 +42,7 @@ from databrowser import app
 from databrowser import cfg
 from databrowser import mnfst
  
-from databrowser import bcrypt
+from databrowser import fbcrypt
 from databrowser.models import Admin
 from databrowser.logging import logmsg
 
@@ -397,7 +397,7 @@ def settings():
         else:
             cfg.use_metric = False
         if len(form.password.data) > 0:
-            cfg.passwd = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+            cfg.passwd = fbcrypt.generate_password_hash(form.password.data).decode('utf-8')
             logout_user()
         cfg.write()
         return redirect(url_for('home'))
@@ -436,7 +436,7 @@ def login():
     if form.validate_on_submit():
         password = form.password.data
         user = Admin()
-        if bcrypt.check_password_hash(cfg.passwd,password):
+        if fbcrypt.check_password_hash(cfg.passwd,password):
             login_user(user,True)
             next_page = request.args.get('next')
             if None is not next_page:

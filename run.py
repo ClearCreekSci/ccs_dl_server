@@ -19,7 +19,7 @@
 '''
 
 from databrowser import app
-from databrowser import bcrypt
+from databrowser import fbcrypt
 from databrowser import cfg
 from databrowser import defaultpassword
 from databrowser import configpath 
@@ -30,7 +30,7 @@ if '__main__' == __name__:
     initlog(cfg)
     if len(cfg.passwd) == 0:
         logmsg(cfg,__name__,'Writing default password')
-        cfg.passwd = bcrypt.generate_password_hash(defaultpassword).decode('utf-8')
+        cfg.passwd = fbcrypt.generate_password_hash(defaultpassword).decode('utf-8')
         cfg.write(configpath)
     logmsg(cfg,__name__,'Starting app')
     app.run(debug=False,host='0.0.0.0',port=5000)
