@@ -10,7 +10,6 @@ TAG_CSV            = 'csv'
 TAG_INTERNAL       = 'internal'
 TAG_LOG            = 'log'
 TAG_METRIC         = 'metric'
-TAG_PASSWORD       = 'password'
 TAG_PATHS          = 'paths'
 TAG_PHASH          = 'phash'
 TAG_PHOTOS         = 'photos'
@@ -58,7 +57,7 @@ class Settings(object):
                  secret_node = internal_node.find(TAG_SECRET)
                  if None is not secret_node:
                      self.secret = secret_node.text.strip()
-                 password_node = internal_node.find(TAG_SECRET)
+                 password_node = internal_node.find(TAG_PHASH)
                  if None is not password_node:
                      self.password = password_node.text.strip()
                  metric_node = internal_node.find(TAG_METRIC)
