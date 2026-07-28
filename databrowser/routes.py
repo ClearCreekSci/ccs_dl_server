@@ -103,9 +103,7 @@ def get_most_recent_file_paths(events):
 def parse_most_recent():
     rv = list()
     events = get_csv_events_from_filenames(cfg.csv_dir)
-    print('[parse_most_recent] events: ' + str(events))
     datafiles = get_most_recent_file_paths(cfg.csv_dir)
-    print('[parse_most_recent] datafiles: ' + str(datafiles))
     for file in datafiles:
         header = None
         data = None
@@ -256,6 +254,7 @@ def remove_leftovers():
 # We no longer use two "package" functions here, but may want to move them to 
 # the data logger configuration application when it is written...
 def calculate_package_rate(index,frequency):
+    global cfg
     rv = 0
     if forms.PKG_15_MIN == index:
         rv = int(15/frequency)
@@ -268,7 +267,7 @@ def calculate_package_rate(index,frequency):
     elif forms.PKG_WEEKLY == index:
         rv = int(10080/frequency)
     else:
-        print('[calculate_package_rate] Unrecognized index: ' + str(index))
+        logmsg(cfg,'calculate_package_rate','Unrecognized index: ' + str(index))
     return rv
 
 def calculate_package_index(package_rate,frequency):
@@ -356,16 +355,13 @@ def delete_photos(entries):
         # Delete the link to the photo file
         cwd = os.getcwd()
         link = os.path.join(cwd,'static/photos')
+        # Delete the link
         link = os.path.join(link,entry)
-        print('to delete: ' + link)
         if os.path.exists(link):
-            print('deleting: ' + link)
             pathlib.Path.unlink(link)
         # Delete the photo file
         path = os.path.join(cfg.photos_dir,entry)
-        print('to delete: ' + path)
         if os.path.exists(path):
-            print('deleting: ' + path)
             pathlib.Path.unlink(path)
 
 
@@ -443,6 +439,8 @@ def login():
                 return redirect(next_page)
             else:
                 return redirect(url_for('home'))
+        else:
+            logmsg(cfg,'login','Invalid login attempt')
     return render_template('login.html',title='Login',form=form)
 
 
