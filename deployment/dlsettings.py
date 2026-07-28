@@ -10,6 +10,7 @@ TAG_CSV            = 'csv'
 TAG_INTERNAL       = 'internal'
 TAG_LOG            = 'log'
 TAG_METRIC         = 'metric'
+TAG_PASSWORD       = 'password'
 TAG_PATHS          = 'paths'
 TAG_PHASH          = 'phash'
 TAG_PHOTOS         = 'photos'
@@ -33,7 +34,6 @@ class Settings(object):
         self.version = DEFAULT_VERSION
         self.password = DEFAULT_PASSWORD
         self.secret = DEFAULT_SECRET
-        self.phash = None
         self.hash_func = None
         self.use_metric = True
 
@@ -57,9 +57,12 @@ class Settings(object):
                  secret_node = internal_node.find(TAG_SECRET)
                  if None is not secret_node:
                      self.secret = secret_node.text.strip()
-                 password_node = internal_node.find(TAG_PHASH)
+                 password_node = internal_node.find(TAG_PASSWORD)
                  if None is not password_node:
                      self.password = password_node.text.strip()
+                 phash_node = internal_node.find(TAG_PHASH)
+                 if None is not phash_node:
+                     self.phash = phash_node.text.strip()
                  metric_node = internal_node.find(TAG_METRIC)
                  if None is not metric_node:
                      self.use_metric = interpret_boolean_value(metric_node.text.strip())
@@ -102,9 +105,14 @@ class Settings(object):
                 if None is not self.hash_func:
                     self.phash = self.hash_func(self.password)
             if None is not self.phash:
+                self.password = None
                 fd.write('<' + TAG_PHASH + '>')
                 fd.write(self.phash.decode('utf-8'))
                 fd.write('</' + TAG_PHASH + '>\n')
+            if None is not self.password:
+                fd.write('<' + TAG_PASSWORD + '>')
+                fd.write(str(self.password))
+                fd.write('</' + TAG_PASSWORD + '>\n')
             fd.write('<' + TAG_METRIC + '>')
             fd.write(str(self.use_metric))
             fd.write('</' + TAG_METRIC + '>\n')
@@ -120,7 +128,6 @@ class Settings(object):
         rv += 'version: ' + str(self.version) + '\n'
         rv += 'secret: ' + str(self.secret) + '\n'
         rv += 'password: ' + str(self.password) + '\n'
-        rv += 'phash: ' + str(self.phash) + '\n'
         rv += 'metric: ' + str(self.metric) + '\n'
         return rv
 
