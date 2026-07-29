@@ -32,8 +32,9 @@ class Settings(object):
     def __init__(self):
         self.paths = dict()
         self.version = DEFAULT_VERSION
-        self.password = DEFAULT_PASSWORD
         self.secret = DEFAULT_SECRET
+        self.password = DEFAULT_PASSWORD
+        self.phash = None
         self.hash_func = None
         self.use_metric = True
 
