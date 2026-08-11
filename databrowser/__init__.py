@@ -37,7 +37,8 @@ cfg = dbconfig.DBSettings()
 cfg.read(configpath)
 
 try:
-    mnfst = manifest.Manifest(manifestpath)
+    mnfst = manifest.Manifest()
+    mnfst.read(manifestpath)
 except FileNotFoundError:
     mnfst = None
 
