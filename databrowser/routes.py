@@ -53,10 +53,12 @@ from databrowser import forms
 DOWNLOAD_SUFFIX                      = '_ccs_logger.zip'
 
 def get_timestamp_from_path(path):
+    path = os.path.basename(path)
     parts = path.split('_')
     return ''.join(parts[0:2])
 
 def get_event_from_path(path):
+    path = os.path.basename(path)
     parts = path.split('_')
     return '_'.join(parts[2:4])
 
