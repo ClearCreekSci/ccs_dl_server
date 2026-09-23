@@ -381,7 +381,9 @@ def csv():
             return download_csv_files(entries)
         elif 'delete' == request.form['action']:
             delete_csv_files(entries)
-    return render_template('csv.html',title='Download',files=os.listdir(cfg.csv_dir))
+    files = os.listdir(cfg.csv_dir)
+    files.sort()
+    return render_template('csv.html',title='Download',files)
 
 @app.route('/settings',methods=['GET','POST'])
 @login_required
